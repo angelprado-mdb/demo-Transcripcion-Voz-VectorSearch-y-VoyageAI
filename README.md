@@ -83,20 +83,35 @@ Desde **Atlas UI → Browse Collections**:
 
 ## Paso 3 — Importar los datos de ejemplo (opcional)
 
-El repositorio incluye archivos JSON de muestra con transcripciones de llamadas comerciales. Puedes importarlos con **mongoimport** antes de arrancar la app:
+El repositorio incluye llamadas de muestra en la carpeta **`transcripciones_de_ejemplo/`** listas para usar. Puedes cargarlas de dos formas:
+
+### Opción A — Desde la UI de la app (recomendado)
+
+Una vez que tengas la app corriendo (Paso 5), ve al **Paso 1 del wizard** y arrastra cualquiera de estos archivos al área de carga:
+
+| Archivo | Contenido |
+|---|---|
+| `transcripcion_llamada_seguros.json` | 1 llamada detallada — venta cerrada, con manejo de objeciones |
+| `5_transcripciones_adicionales.json` | 5 llamadas — distintos resultados: venta cerrada, perdida por precio, perdida por servicio existente, cliente ocupado |
+
+La app acepta tanto un objeto JSON individual como un array — sube el archivo y la colección se puebla automáticamente.
+
+### Opción B — Con mongoimport (antes de arrancar la app)
+
+Puedes importarlos con **mongoimport** antes de arrancar la app:
 
 ```bash
 # Una sola llamada
 mongoimport --uri "mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net" \
   --db Llamadas \
   --collection Llamadas \
-  --file transcripcion_llamada_seguros.json
+  --file transcripciones_de_ejemplo/transcripcion_llamada_seguros.json
 
 # Múltiples llamadas (array JSON)
 mongoimport --uri "mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net" \
   --db Llamadas \
   --collection Llamadas \
-  --file 5_transcripciones_adicionales.json \
+  --file transcripciones_de_ejemplo/5_transcripciones_adicionales.json \
   --jsonArray
 ```
 
@@ -279,7 +294,9 @@ voices-demo/
 │   ├── style.css                   # Tema claro, paleta MongoDB
 │   └── app.js                      # Lógica del wizard, búsqueda, chat, embeddings
 │
-└── [archivos JSON de muestra]      # Transcripciones de llamadas para el demo
+└── transcripciones_de_ejemplo/     # Llamadas de muestra listas para usar en la UI
+    ├── transcripcion_llamada_seguros.json   # 1 llamada detallada (venta cerrada)
+    └── 5_transcripciones_adicionales.json  # 5 llamadas con distintos resultados
 ```
 
 ---
