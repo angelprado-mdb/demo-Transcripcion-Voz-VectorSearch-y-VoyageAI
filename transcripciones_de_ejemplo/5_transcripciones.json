@@ -1,0 +1,313 @@
+[
+    {
+        "id_llamada": "CALL-2026-0709-B12",
+        "fecha": "2026-07-09",
+        "hora_inicio": "12:15:00",
+        "duracion_segundos": 150,
+        "empresa": "Llamaditas SA",
+        "agente": {
+            "nombre": "Fulanito",
+            "departamento": "Ventas Outbound",
+            "puesto": "Asesor de Seguros Senior"
+        },
+        "cliente": {
+            "nombre": "Menganito",
+            "telefono": "+52 55 5555 2222",
+            "correo": "menganito@example.com"
+        },
+        "producto": {
+            "nombre": "Seguro de Vida PRO",
+            "cobertura_principal": "Fallecimiento e Incapacidad Total y Permanente",
+            "costo_mensual_mxn": 450.0
+        },
+        "resultado_llamada": "Venta Perdida - Cliente sin presupuesto",
+        "transcripcion": [
+            {
+                "orden": 1,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Buenos días, ¿me comunico con el señor Menganito?"
+            },
+            {
+                "orden": 2,
+                "hablante": "Menganito",
+                "rol": "Cliente",
+                "texto": "Sí, soy yo. ¿Qué se le ofrece?"
+            },
+            {
+                "orden": 3,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Le llamo de Llamaditas SA para ofrecerle una mejora en su cuenta con nuestro nuevo Seguro de Vida PRO por solo 450 pesos al mes."
+            },
+            {
+                "orden": 4,
+                "hablante": "Menganito",
+                "rol": "Cliente",
+                "texto": "Joven, la verdad ahorita no tengo dinero para andar pagando seguros. Me acabo de quedar sin empleo."
+            },
+            {
+                "orden": 5,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Entiendo su situación, señor Menganito. Espero que todo mejore pronto. Quedamos a sus órdenes para el futuro. Que tenga un buen día."
+            },
+            {
+                "orden": 6,
+                "hablante": "Menganito",
+                "rol": "Cliente",
+                "texto": "Gracias, hasta luego."
+            }
+        ]
+    },
+    {
+        "id_llamada": "CALL-2026-0709-C34",
+        "fecha": "2026-07-09",
+        "hora_inicio": "13:45:10",
+        "duracion_segundos": 320,
+        "empresa": "Llamaditas SA",
+        "agente": {
+            "nombre": "Fulanito",
+            "departamento": "Ventas Outbound",
+            "puesto": "Asesor de Seguros Senior"
+        },
+        "cliente": {
+            "nombre": "Sutanito",
+            "telefono": "+52 55 5555 3333",
+            "correo": "sutanito@example.com"
+        },
+        "producto": {
+            "nombre": "Seguro de Vida PRO",
+            "cobertura_principal": "Fallecimiento e Incapacidad Total y Permanente",
+            "costo_mensual_mxn": 450.0
+        },
+        "resultado_llamada": "Venta Cerrada - Aceptó Seguro PRO",
+        "transcripcion": [
+            {
+                "orden": 1,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Buenas tardes, señor Sutanito. Soy Fulanito de Llamaditas SA. Le llamo para activarle su beneficio de Seguro de Vida PRO."
+            },
+            {
+                "orden": 2,
+                "hablante": "Sutanito",
+                "rol": "Cliente",
+                "texto": "Buenas tardes. A ver, cuéntame un poco más, ¿qué incluye?"
+            },
+            {
+                "orden": 3,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Incluye cobertura de hasta un millón de pesos por fallecimiento o incapacidad, asistencia médica 24/7 y cobertura total de gastos funerarios, todo por 450 pesos al mes."
+            },
+            {
+                "orden": 4,
+                "hablante": "Sutanito",
+                "rol": "Cliente",
+                "texto": "Me interesa mucho lo de los gastos funerarios. Acabamos de pasar por un susto en la familia y es mejor estar prevenidos."
+            },
+            {
+                "orden": 5,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Totalmente de acuerdo. La prevención es clave. ¿Le parece bien si procedemos a darlo de alta con los datos que ya tenemos registrados?"
+            },
+            {
+                "orden": 6,
+                "hablante": "Sutanito",
+                "rol": "Cliente",
+                "texto": "Sí, me parece perfecto. Procede, por favor."
+            }
+        ]
+    },
+    {
+        "id_llamada": "CALL-2026-0709-D56",
+        "fecha": "2026-07-09",
+        "hora_inicio": "14:20:00",
+        "duracion_segundos": 60,
+        "empresa": "Llamaditas SA",
+        "agente": {
+            "nombre": "Fulanito",
+            "departamento": "Ventas Outbound",
+            "puesto": "Asesor de Seguros Senior"
+        },
+        "cliente": {
+            "nombre": "Lupita",
+            "telefono": "+52 55 5555 4444",
+            "correo": "lupita@example.com"
+        },
+        "producto": {
+            "nombre": "Seguro de Vida PRO",
+            "cobertura_principal": "Fallecimiento e Incapacidad Total y Permanente",
+            "costo_mensual_mxn": 450.0
+        },
+        "resultado_llamada": "Llamar más tarde - Cliente ocupado",
+        "transcripcion": [
+            {
+                "orden": 1,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Hola, buenas tardes. ¿Me comunico con la señora Lupita?"
+            },
+            {
+                "orden": 2,
+                "hablante": "Lupita",
+                "rol": "Cliente",
+                "texto": "Sí, pero voy manejando, no puedo contestar ahora."
+            },
+            {
+                "orden": 3,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Una disculpa, señora Lupita. No la entretengo. ¿Le parece bien si le regreso la llamada mañana por la mañana?"
+            },
+            {
+                "orden": 4,
+                "hablante": "Lupita",
+                "rol": "Cliente",
+                "texto": "Sí, háblame mañana a las 10, por favor. Gracias."
+            },
+            {
+                "orden": 5,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Con gusto, maneje con cuidado. Hasta luego."
+            }
+        ]
+    },
+    {
+        "id_llamada": "CALL-2026-0709-E78",
+        "fecha": "2026-07-09",
+        "hora_inicio": "15:10:30",
+        "duracion_segundos": 280,
+        "empresa": "Llamaditas SA",
+        "agente": {
+            "nombre": "Fulanito",
+            "departamento": "Ventas Outbound",
+            "puesto": "Asesor de Seguros Senior"
+        },
+        "cliente": {
+            "nombre": "Juan Camaney",
+            "telefono": "+52 55 5555 5555",
+            "correo": "juan.camaney@example.com"
+        },
+        "producto": {
+            "nombre": "Seguro de Vida PRO",
+            "cobertura_principal": "Fallecimiento e Incapacidad Total y Permanente",
+            "costo_mensual_mxn": 450.0
+        },
+        "resultado_llamada": "Venta Cerrada - Aceptó Seguro PRO",
+        "transcripcion": [
+            {
+                "orden": 1,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Buenas tardes, ¿señor Juan Camaney?"
+            },
+            {
+                "orden": 2,
+                "hablante": "Juan Camaney",
+                "rol": "Cliente",
+                "texto": "El mismo que viste y calza. ¿Quién habla?"
+            },
+            {
+                "orden": 3,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Soy Fulanito, de Llamaditas SA. Señor Juan, veo que ya tiene el seguro básico con nosotros. Le llamo para ofrecerle hacer el 'upgrade' al Seguro de Vida PRO por una pequeña diferencia mensual."
+            },
+            {
+                "orden": 4,
+                "hablante": "Juan Camaney",
+                "rol": "Cliente",
+                "texto": "Ah, caray. ¿Y qué me dan de más con ese PRO?"
+            },
+            {
+                "orden": 5,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Le triplicamos la suma asegurada, y le damos cobertura de anticipo en caso de enfermedades graves por solo 450 pesos mensuales en total."
+            },
+            {
+                "orden": 6,
+                "hablante": "Juan Camaney",
+                "rol": "Cliente",
+                "texto": "Pues no suena nada mal. La verdad sí me hace falta algo más completo. Dale, apúntame en ese."
+            },
+            {
+                "orden": 7,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Excelente decisión, señor Juan. Procedo a leerle los términos para confirmar su contratación..."
+            }
+        ]
+    },
+    {
+        "id_llamada": "CALL-2026-0709-F90",
+        "fecha": "2026-07-09",
+        "hora_inicio": "16:05:00",
+        "duracion_segundos": 180,
+        "empresa": "Llamaditas SA",
+        "agente": {
+            "nombre": "Fulanito",
+            "departamento": "Ventas Outbound",
+            "puesto": "Asesor de Seguros Senior"
+        },
+        "cliente": {
+            "nombre": "Doña Florinda",
+            "telefono": "+52 55 5555 6666",
+            "correo": "dona.florinda@example.com"
+        },
+        "producto": {
+            "nombre": "Seguro de Vida PRO",
+            "cobertura_principal": "Fallecimiento e Incapacidad Total y Permanente",
+            "costo_mensual_mxn": 450.0
+        },
+        "resultado_llamada": "Venta Perdida - Cliente cuenta con otro servicio",
+        "transcripcion": [
+            {
+                "orden": 1,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Buenas tardes, ¿señora Florinda?"
+            },
+            {
+                "orden": 2,
+                "hablante": "Doña Florinda",
+                "rol": "Cliente",
+                "texto": "Sí, ¿quién me llama a estas horas?"
+            },
+            {
+                "orden": 3,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Le habla Fulanito de Llamaditas SA. Le llamo para ofrecerle nuestro exclusivo Seguro de Vida PRO con grandes beneficios."
+            },
+            {
+                "orden": 4,
+                "hablante": "Doña Florinda",
+                "rol": "Cliente",
+                "texto": "Mire joven, le voy a detener ahí. Yo ya tengo mis seguros contratados con el banco desde hace años y estoy muy contenta. No me interesa cambiarme ni contratar nada más."
+            },
+            {
+                "orden": 5,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "Comprendo, señora Florinda. Solo le tomaría un minuto escuchar cómo podemos complementar su seguro actual..."
+            },
+            {
+                "orden": 6,
+                "hablante": "Doña Florinda",
+                "rol": "Cliente",
+                "texto": "No, gracias. Como le dije, no me interesa. Por favor ya no me llamen para esto. Que tenga buena tarde."
+            },
+            {
+                "orden": 7,
+                "hablante": "Fulanito",
+                "rol": "Agente",
+                "texto": "De acuerdo, respetaremos su decisión. Que pase buena tarde."
+            }
+        ]
+    }
+]

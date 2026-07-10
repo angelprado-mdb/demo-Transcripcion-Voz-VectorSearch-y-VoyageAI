@@ -1,0 +1,142 @@
+{
+    "id_llamada": "CALL-2026-0709-A45",
+    "fecha": "2026-07-09",
+    "hora_inicio": "11:30:22",
+    "duracion_segundos": 285,
+    "empresa": "Llamaditas SA",
+    "agente": {
+        "nombre": "Fulanito",
+        "departamento": "Ventas Outbound",
+        "puesto": "Asesor de Seguros Senior"
+    },
+    "cliente": {
+        "nombre": "Perenganito",
+        "telefono": "+52 55 5555 1234",
+        "correo": "perenganito@example.com"
+    },
+    "producto": {
+        "nombre": "Seguro de Vida PRO",
+        "cobertura_principal": "Fallecimiento e Incapacidad Total y Permanente",
+        "beneficios_adicionales": [
+            "Asistencia médica telefónica 24/7",
+            "Gastos funerarios cubiertos al 100%",
+            "Anticipo por enfermedades graves"
+        ],
+        "costo_mensual_mxn": 450.0
+    },
+    "resultado_llamada": "Venta Cerrada - Aceptó Seguro PRO",
+    "transcripcion": [
+        {
+            "orden": 1,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "00:02",
+            "texto": "Buenos días, ¿me comunico con el señor Perenganito?"
+        },
+        {
+            "orden": 2,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "00:05",
+            "texto": "Sí, buenos días. ¿De parte de quién?"
+        },
+        {
+            "orden": 3,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "00:07",
+            "texto": "Le habla Fulanito de Llamaditas SA. El motivo de mi llamada, señor Perenganito, es porque actualmente usted es un cliente distinguido con nosotros y queremos presentarle nuestro nuevo beneficio exclusivo: el Seguro de Vida PRO. ¿Dispone de un par de minutos?"
+        },
+        {
+            "orden": 4,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "00:22",
+            "texto": "Mire, Fulanito, la verdad es que ahorita estoy un poco ocupado y, además, ya tengo un seguro básico con mi tarjeta de crédito. No creo necesitar otro."
+        },
+        {
+            "orden": 5,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "00:33",
+            "texto": "Comprendo perfectamente su tiempo, señor Perenganito, y seré muy breve. Precisamente porque ya cuenta con un beneficio con nosotros, este Seguro de Vida PRO no viene a sustituirlo, sino a potenciarlo. A diferencia de un seguro básico, el Plan PRO le ofrece una cobertura extendida no solo por fallecimiento, sino también en vida en caso de una incapacidad total o permanente que le impida seguir trabajando."
+        },
+        {
+            "orden": 6,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "00:58",
+            "texto": "Eso suena bien, pero me imagino que ha de ser carísimo. Las cosas no están para gastar de más ahorita."
+        },
+        {
+            "orden": 7,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "01:05",
+            "texto": "Le entiendo totalmente, la economía es prioridad. Por eso mismo, Llamaditas SA diseñó este producto pensando en la accesibilidad. Para usted, por su excelente historial, el Seguro de Vida PRO tiene un costo de tan solo 450 pesos mensuales. Menos de lo que cuesta un café al día, pero con la tranquilidad de que su familia recibiría un respaldo de hasta un millón de pesos si algo llegara a suceder."
+        },
+        {
+            "orden": 8,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "01:32",
+            "texto": "¿450 pesos fijos? ¿O sube cada año con la edad?"
+        },
+        {
+            "orden": 9,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "01:38",
+            "texto": "Excelente pregunta. El precio de 450 pesos se congela por los primeros 5 años de su póliza. Además, incluye asistencia médica telefónica las 24 horas y cobertura total de gastos funerarios. Si usted llega a sufrir un accidente o se le diagnostica una enfermedad grave, se le entrega un anticipo inmediato para cubrir sus gastos médicos."
+        },
+        {
+            "orden": 10,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "02:01",
+            "texto": "Vaya, el anticipo de enfermedad grave sí me llama la atención. Mi padre pasó por algo así y los gastos nos comieron vivos."
+        },
+        {
+            "orden": 11,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "02:11",
+            "texto": "Lamento mucho escuchar lo de su señor padre, Perenganito. Y tiene toda la razón, un problema de salud no solo afecta el ánimo, sino el patrimonio familiar. El Seguro de Vida PRO está hecho justo para eso, para que usted se enfoque en recuperarse mientras el seguro absorbe el impacto financiero. Proteger a los que ama cuesta muy poco si se previene a tiempo."
+        },
+        {
+            "orden": 12,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "02:35",
+            "texto": "Bueno, Fulanito... me ha convencido el argumento. Creo que sí es una buena inversión para proteger a mis hijos. ¿Qué papeleo tengo que hacer?"
+        },
+        {
+            "orden": 13,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "02:44",
+            "texto": "Me da muchísimo gusto su decisión, señor Perenganito, es un acto de gran responsabilidad. No requiere ningún papeleo engorroso ni exámenes médicos. Como ya es cliente de Llamaditas SA, puedo realizar el alta de su Seguro de Vida PRO directamente en esta llamada utilizando sus datos de registro. El cargo se haría mensualmente de forma automática a su cuenta. ¿Está de acuerdo en que procedamos con la contratación?"
+        },
+        {
+            "orden": 14,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "03:10",
+            "texto": "Sí, de acuerdo. Vamos a darle adelante con el Seguro PRO."
+        },
+        {
+            "orden": 15,
+            "hablante": "Fulanito",
+            "rol": "Agente",
+            "tiempo_marca": "03:15",
+            "texto": "Perfecto. Voy a proceder a leer el aviso de privacidad y los términos legales para confirmar su consentimiento grabado. Después de esto, la póliza llegará a su correo electrónico en un lapso de 10 minutos. Muchísimas gracias por su confianza, señor Perenganito."
+        },
+        {
+            "orden": 16,
+            "hablante": "Perenganito",
+            "rol": "Cliente",
+            "tiempo_marca": "03:32",
+            "texto": "Al contrario, gracias a usted por la explicación, Fulanito. Quedo atento a la lectura."
+        }
+    ]
+}
