@@ -1,0 +1,77 @@
+# ============================================================
+# Voice Demo — .gitignore
+# ============================================================
+
+# ------ Credenciales y variables de entorno ------
+# NUNCA subir archivos .env con credenciales reales
+backend/.env
+.env
+*.env
+!.env.example        # el ejemplo SIN credenciales sí se sube
+
+# ------ Python ------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# Entorno virtual
+backend/.venv/
+.venv/
+venv/
+env/
+ENV/
+
+# Distribución / build
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# Coverage y testing
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ------ Editores e IDEs ------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------ Logs ------
+*.log
+logs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ------ Jupyter ------
+.ipynb_checkpoints/
+*.ipynb
+
+# ------ Node (por si se agrega tooling frontend) ------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ------ Archivos temporales del sistema ------
+*.tmp
+*.temp
+.cache/

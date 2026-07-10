@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice Demo — MongoDB Vector Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- HEADER MINIMALISTA -->
+<header class="wiz-header">
+  <div class="wiz-header-inner">
+    <div class="logo">
+      <div class="logo-leaf"></div>
+      <div class="logo-text">
+        <span class="brand">MongoDB · VoyageAI</span>
+        <span class="title">Voice <span>Demo</span></span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="health-indicator">
+        <div class="health-dot" id="health-dot"></div>
+        <span id="health-label">Conectando...</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- WIZARD: un solo div visible a la vez -->
+<main class="wiz-main" id="wizard">
+
+  <!-- ============================================================
+       PASO 0: SPLASH / BIENVENIDA
+       ============================================================ -->
+  <section class="wiz-step active" id="step-0">
+    <div class="wiz-center">
+      <div class="splash-logo">
+        <div class="splash-leaf"></div>
+      </div>
+      <h1 class="splash-title">MongoDB Vector Search</h1>
+      <p class="splash-sub">Demo interactivo sobre llamadas comerciales</p>
+      <p class="splash-desc">
+        Vas a explorar como MongoDB Atlas convierte llamadas en vectores,
+        las busca por significado y responde preguntas sobre ellas.
+      </p>
+      <button class="btn btn-primary btn-xl" onclick="goStep(1)">Comenzar</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 1: SUBIR LLAMADA O SELECCIONAR EXISTENTE
+       ============================================================ -->
+  <section class="wiz-step" id="step-1">
+    <div class="wiz-content wiz-content-wide">
+      <div class="step-header">
+        <div class="step-num">Paso 1 de 4</div>
+        <h2 class="step-title">Carga una llamada</h2>
+        <p class="step-desc">
+          Sube un archivo JSON con la transcripcion de una llamada,
+          o selecciona una que ya existe en la base de datos.
+        </p>
+      </div>
+
+      <div class="upload-choice">
+
+        <!-- Opcion A: Subir JSON -->
+        <div class="upload-panel" id="panel-upload">
+          <div class="upload-panel-title">Subir archivo JSON</div>
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="file-input" accept=".json" />
+            <div class="upload-icon-big">&#8679;</div>
+            <div class="upload-text">Arrastra tu JSON aqui</div>
+            <div class="upload-hint">o haz clic para seleccionar</div>
+          </div>
+          <div id="upload-file-info"></div>
+          <button class="btn btn-primary btn-block" id="upload-confirm" disabled>
+            Insertar en MongoDB
+          </button>
+          <div id="upload-result"></div>
+        </div>
+
+        <div class="upload-or">o</div>
+
+        <!-- Opcion B: Seleccionar existente -->
+        <div class="upload-panel" id="panel-existing">
+          <div class="upload-panel-title">Usar llamada existente</div>
+          <div id="existing-list">
+            <div class="loading-inline">
+              <span class="spinner-sm"></span> Cargando llamadas...
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 2: TRANSCRIPCION + EMBEDDING (pantalla dividida)
+       ============================================================ -->
+  <section class="wiz-step" id="step-2">
+    <div class="wiz-content wiz-content-full">
+
+      <div class="step-header" style="margin-bottom:1rem">
+        <div class="step-num">Paso 2 de 4</div>
+        <h2 class="step-title" id="step2-title">La llamada en MongoDB</h2>
+        <p class="step-desc" id="step2-desc">
+          A la izquierda ves la transcripcion tal como esta guardada.
+          A la derecha, como la representa Atlas como un vector de 1024 numeros.
+        </p>
+      </div>
+
+      <!-- Flujo de datos visual — PROMINENTE -->
+      <div class="data-flow-section" id="data-flow">
+        <div class="data-flow-title">Como funciona: del JSON al vector</div>
+        <div class="data-flow">
+          <div class="flow-node flow-node-json">Tu JSON<br><span>insert_one(doc)</span></div>
+          <div class="flow-arrow-wrap"><div class="flow-line"></div><div class="flow-arrowhead"></div></div>
+          <div class="flow-node flow-node-mongo">MongoDB Atlas<br><span>coleccion Llamadas</span></div>
+          <div class="flow-arrow-wrap"><div class="flow-line"></div><div class="flow-arrowhead"></div></div>
+          <div class="flow-node flow-node-atlas">Atlas detecta<br><span>nuevo documento</span></div>
+          <div class="flow-arrow-wrap"><div class="flow-line"></div><div class="flow-arrowhead"></div></div>
+          <div class="flow-node flow-node-voyage">VoyageAI<br><span>modelo voyage-4</span></div>
+          <div class="flow-arrow-wrap"><div class="flow-line"></div><div class="flow-arrowhead"></div></div>
+          <div class="flow-node flow-node-embed">Vector<br><span>1024 dimensiones</span></div>
+          <div class="flow-arrow-wrap"><div class="flow-line"></div><div class="flow-arrowhead"></div></div>
+          <div class="flow-node flow-node-internal">__mdb_internal<br><span>_search (interno)</span></div>
+        </div>
+
+        <div class="flow-labels">
+          <div class="flow-label-item">
+            <div class="flow-label-num">1</div>
+            <span><strong>Insertas normalmente.</strong> No hay codigo adicional. Solo <code>insert_one()</code> o <code>insert_many()</code>.</span>
+          </div>
+          <div class="flow-label-item">
+            <div class="flow-label-num">2</div>
+            <span><strong>Atlas detecta la insercion</strong> automaticamente al tener el indice <code>autoEmbed</code> activo.</span>
+          </div>
+          <div class="flow-label-item">
+            <div class="flow-label-num">3</div>
+            <span><strong>VoyageAI convierte el texto</strong> de la transcripcion en 1024 numeros que capturan su significado.</span>
+          </div>
+          <div class="flow-label-item">
+            <div class="flow-label-num">4</div>
+            <span><strong>El vector se guarda</strong> en una base de datos interna separada. Tu documento original no cambia.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nota educativa sobre automatizacion -->
+      <div class="edu-note" id="edu-note-cs">
+        <span class="edu-note-icon">&#9432;</span>
+        <span>
+          Todo este proceso es <strong>completamente automatico</strong>. Al definir el indice con <code>autoEmbed</code>,
+          Atlas gestiona la vectorizacion, la sincronizacion y las actualizaciones.
+          No necesitas modificar nada en tu aplicacion existente.
+        </span>
+      </div>
+
+      <!-- Split view -->
+      <div class="split-view" id="split-view">
+        <!-- Izquierda: transcripcion -->
+        <div class="split-left">
+          <div class="split-label">
+            Transcripcion en MongoDB
+            <span class="split-label-sub" id="call-id-badge"></span>
+          </div>
+          <div class="transcripcion-container" id="transcripcion-view">
+            <div class="loading-inline"><span class="spinner-sm"></span> Cargando...</div>
+          </div>
+        </div>
+
+        <!-- Derecha: embedding -->
+        <div class="split-right">
+          <div class="split-label">
+            Embedding en <code>__mdb_internal_search</code>
+          </div>
+          <div class="embed-container" id="embed-view">
+            <div class="loading-inline"><span class="spinner-sm"></span> Cargando embedding...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wiz-nav">
+        <button class="btn btn-ghost" onclick="goStep(1)">Atras</button>
+        <button class="btn btn-primary" onclick="goStep(3)">Siguiente paso: &iexcl;prueba la busqueda semantica! &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 3: BUSQUEDA SEMANTICA DE PRUEBA
+       ============================================================ -->
+  <section class="wiz-step" id="step-3">
+    <div class="wiz-content">
+
+      <div class="step-header">
+        <div class="step-num">Paso 3 de 4</div>
+        <h2 class="step-title">Busqueda semantica</h2>
+        <p class="step-desc">
+          Escribe una pregunta en lenguaje natural. MongoDB convierte tu texto en un vector
+          y busca los documentos mas cercanos en el espacio vectorial.
+        </p>
+      </div>
+
+      <!-- Explicacion de similitud -->
+      <div class="edu-card" id="edu-similarity">
+        <div class="edu-card-header" onclick="toggleEdu(this)">
+          <span>Como funciona la similitud y el score</span>
+          <span class="edu-toggle">&#9660;</span>
+        </div>
+        <div class="edu-card-body">
+          <p>Cada llamada es un vector de 1024 numeros. Cuando buscas, tu consulta tambien se convierte en un vector.</p>
+          <p>Atlas calcula la <strong>similitud por producto punto</strong> entre tu vector y los de la coleccion. Los documentos con mayor similitud aparecen primero.</p>
+          <div class="formula-box">
+            score = A &middot; B &nbsp;=&nbsp; &sum; A<sub>i</sub> &times; B<sub>i</sub>
+          </div>
+          <p>El score refleja que tan parecido es el <em>significado</em> de tu pregunta al contenido de cada llamada, no cuantas palabras comparten.</p>
+        </div>
+      </div>
+
+      <!-- Input de busqueda -->
+      <div class="search-box">
+        <input
+          type="text"
+          id="search-input"
+          class="search-input-big"
+          placeholder="Ej: llamadas donde el cliente rechazo por precio..."
+          onkeydown="if(event.key==='Enter') runSearch()"
+        />
+        <button class="btn btn-primary btn-search" onclick="runSearch()" id="search-btn">
+          Buscar
+        </button>
+      </div>
+
+      <!-- Chips de ejemplo -->
+      <div class="chips-row">
+        <span class="chips-label">Ejemplos:</span>
+        <button class="chip" onclick="setQuery(this.textContent)">Cliente sin presupuesto</button>
+        <button class="chip" onclick="setQuery(this.textContent)">Venta exitosa con objeciones</button>
+        <button class="chip" onclick="setQuery(this.textContent)">Cliente ocupado o no disponible</button>
+        <button class="chip" onclick="setQuery(this.textContent)">Cliente con seguro existente</button>
+        <button class="chip" onclick="setQuery(this.textContent)">Mencion de familia o enfermedad</button>
+      </div>
+
+      <!-- Resultados -->
+      <div id="search-results-area"></div>
+
+      <!-- Pipeline educativo (aparece despues de buscar) -->
+      <div id="pipeline-panel" style="display:none">
+        <div class="edu-card">
+          <div class="edu-card-header" onclick="toggleEdu(this)">
+            <span>Pipeline ejecutado en MongoDB</span>
+            <span class="edu-toggle">&#9660;</span>
+          </div>
+          <div class="edu-card-body">
+            <div class="code-note">
+              No necesitas generar el vector de tu consulta. Atlas lo hace automaticamente con el mismo modelo voyage-4 del indice.
+            </div>
+            <div class="code-block" id="pipeline-code"></div>
+            <button class="btn btn-ghost btn-sm" onclick="copyCode('pipeline-code')">Copiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="wiz-nav">
+        <button class="btn btn-ghost" onclick="goStep(2)">Atras</button>
+        <button class="btn btn-primary" id="next-to-4" onclick="goStep(4)" style="display:none">
+          Siguiente paso: &iquest;que quieres hacer ahora? &rarr;
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 4: MENU PRINCIPAL (que quieres hacer)
+       ============================================================ -->
+  <section class="wiz-step" id="step-4">
+    <div class="wiz-content">
+      <div class="step-header">
+        <div class="step-num">Paso 4 de 4</div>
+        <h2 class="step-title">Que quieres explorar?</h2>
+        <p class="step-desc">Elige una accion para continuar.</p>
+      </div>
+
+      <div class="menu-grid">
+        <button class="menu-card" onclick="goStep(1)">
+          <div class="menu-icon">&#8679;</div>
+          <div class="menu-title">Subir otra llamada</div>
+          <div class="menu-desc">Agrega un nuevo archivo JSON a la coleccion</div>
+        </button>
+        <button class="menu-card" onclick="goStep(5)">
+          <div class="menu-icon">&#9783;</div>
+          <div class="menu-title">Ver todas las llamadas</div>
+          <div class="menu-desc">Lista de documentos en MongoDB</div>
+        </button>
+        <button class="menu-card" onclick="goStep(6)">
+          <div class="menu-icon">&#x2261;</div>
+          <div class="menu-title">Ver embeddings</div>
+          <div class="menu-desc">Explora los vectores generados por Atlas</div>
+        </button>
+        <button class="menu-card" onclick="goStep(3)">
+          <div class="menu-icon">&#9740;</div>
+          <div class="menu-title">Busqueda semantica</div>
+          <div class="menu-desc">Busca llamadas por significado</div>
+        </button>
+        <button class="menu-card menu-card-rag" onclick="goStep(7)">
+          <div class="menu-icon">&#9881;</div>
+          <div class="menu-title">Chat RAG</div>
+          <div class="menu-desc">Haz preguntas y obtener respuestas generadas por un LLM con contexto de las llamadas</div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 5: LISTA DE LLAMADAS
+       ============================================================ -->
+  <section class="wiz-step" id="step-5">
+    <div class="wiz-content">
+      <div class="step-header">
+        <h2 class="step-title">Llamadas en MongoDB</h2>
+        <p class="step-desc">Documentos en la coleccion <code>Llamadas.Llamadas</code></p>
+      </div>
+      <div id="llamadas-table"></div>
+      <div class="wiz-nav">
+        <button class="btn btn-ghost" onclick="goStep(4)">Volver al menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 6: VER EMBEDDINGS (pantalla dividida)
+       ============================================================ -->
+  <section class="wiz-step" id="step-6">
+    <div class="wiz-content wiz-content-full">
+      <div class="step-header">
+        <h2 class="step-title">Embeddings almacenados</h2>
+        <p class="step-desc">
+          Los vectores generados por Auto-Embedding se guardan en <code>__mdb_internal_search</code>, separados de tus documentos.
+        </p>
+      </div>
+
+      <!-- Selector -->
+      <div class="embed-selector-row">
+        <select id="embed-select" class="embed-select">
+          <option value="">Selecciona una llamada...</option>
+        </select>
+        <button class="btn btn-primary" onclick="loadEmbedding()">Ver embedding</button>
+      </div>
+
+      <div id="embed-split" style="display:none">
+        <div class="split-view">
+          <div class="split-left">
+            <div class="split-label">Documento original</div>
+            <div class="code-block" id="embed-doc-json" style="max-height:420px;overflow-y:auto;font-size:0.73rem"></div>
+          </div>
+          <div class="split-right">
+            <div class="split-label">Vector en __mdb_internal_search</div>
+            <div id="embed-vector-view"></div>
+          </div>
+        </div>
+
+        <!-- Comparador -->
+        <div class="compare-section">
+          <div class="edu-card">
+            <div class="edu-card-header" onclick="toggleEdu(this)">
+              <span>Comparar similitud coseno con otra llamada</span>
+              <span class="edu-toggle">&#9660;</span>
+            </div>
+            <div class="edu-card-body">
+              <div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap">
+                <div style="flex:1;min-width:200px">
+                  <label class="field-label">Comparar con:</label>
+                  <select id="embed-compare-select" class="embed-select"></select>
+                </div>
+                <button class="btn btn-outline" onclick="calcSimilitud()">Calcular cos(&theta;)</button>
+              </div>
+              <div id="similitud-result" style="margin-top:1rem"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wiz-nav">
+        <button class="btn btn-ghost" onclick="goStep(4)">Volver al menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASO 7: CHAT RAG
+       ============================================================ -->
+  <section class="wiz-step" id="step-7">
+    <div class="wiz-content wiz-content-wide">
+      <div class="step-header">
+        <h2 class="step-title">Chat RAG</h2>
+        <p class="step-desc">
+          MongoDB recupera las llamadas mas relevantes y un LLM genera la respuesta.
+          Necesitas una API Key del proveedor que elijas.
+        </p>
+      </div>
+
+      <div class="rag-layout">
+        <!-- Sidebar config -->
+        <div class="rag-sidebar">
+          <div class="rag-config-card">
+            <div class="config-label">Proveedor LLM</div>
+            <select id="llm-provider" onchange="updateModelos()">
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic</option>
+              <option value="gemini">Google Gemini</option>
+            </select>
+
+            <div class="config-label" style="margin-top:0.75rem">Modelo</div>
+            <select id="llm-model"></select>
+
+            <div class="config-label" style="margin-top:0.75rem">API Key</div>
+            <div style="position:relative">
+              <input type="password" id="llm-api-key" placeholder="Ingresa tu API Key..." style="padding-right:2.5rem" />
+              <span style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-dim)" onclick="toggleKeyVis()">&#128065;</span>
+            </div>
+
+            <div class="config-label" style="margin-top:0.75rem">Llamadas a recuperar: <strong id="k-label">5</strong></div>
+            <input type="range" id="chat-k" min="1" max="10" value="5" oninput="document.getElementById('k-label').textContent=this.value" />
+          </div>
+
+          <!-- Pasos RAG -->
+          <div class="rag-steps-panel">
+            <div class="rag-step-item" id="rs-retrieve">
+              <div class="rag-step-dot"></div>
+              <div>
+                <div class="rag-step-name">1. Retrieve</div>
+                <div class="rag-step-detail">$vectorSearch recupera las K llamadas mas relevantes</div>
+              </div>
+            </div>
+            <div class="rag-step-item" id="rs-augment">
+              <div class="rag-step-dot"></div>
+              <div>
+                <div class="rag-step-name">2. Augment</div>
+                <div class="rag-step-detail">Las transcripciones se incluyen como contexto en el prompt</div>
+              </div>
+            </div>
+            <div class="rag-step-item" id="rs-generate">
+              <div class="rag-step-dot"></div>
+              <div>
+                <div class="rag-step-name">3. Generate</div>
+                <div class="rag-step-detail">El LLM lee el contexto y genera la respuesta</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="rag-chat-area">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-empty">
+              <div>Haz una pregunta sobre las llamadas</div>
+              <div style="font-size:0.78rem;color:var(--text-dim);margin-top:0.3rem">Ejemplos de preguntas:</div>
+              <div class="chips-row" style="justify-content:center;margin-top:0.5rem">
+                <button class="chip" onclick="setChatQuery(this.textContent)">Cuales llamadas no fueron exitosas?</button>
+                <button class="chip" onclick="setChatQuery(this.textContent)">Que objeciones mencionaron los clientes?</button>
+                <button class="chip" onclick="setChatQuery(this.textContent)">Resume el desempeno del agente</button>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <textarea
+              id="chat-input"
+              class="chat-textarea"
+              rows="1"
+              placeholder="Escribe tu pregunta..."
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+              oninput="autoGrow(this)"
+            ></textarea>
+            <button class="btn btn-primary" onclick="sendChat()" id="chat-send">Enviar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="wiz-nav">
+        <button class="btn btn-ghost" onclick="goStep(4)">Volver al menu</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Toast -->
+<div id="toast-container" class="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>marked.setOptions({breaks:true,gfm:true});</script>
+<script src="app.js"></script>
+</body>
+</html>
