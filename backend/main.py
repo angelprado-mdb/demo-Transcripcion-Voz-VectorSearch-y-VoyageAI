@@ -85,6 +85,7 @@ class ChatRequest(BaseModel):
     llm_api_key: str
     llm_model: str = "gpt-4o-mini"
     historial: List[dict] = []
+    llm_endpoint_url: str = ""
 
 
 class SimilitudRequest(BaseModel):
@@ -327,10 +328,10 @@ async def chat_rag(req: ChatRequest):
             detail="Se requiere una API Key del proveedor LLM. La API Key nunca se almacena en el servidor."
         )
 
-    if req.llm_provider not in ["openai", "anthropic", "gemini"]:
+    if req.llm_provider not in ["openai", "anthropic", "gemini", "huggingface"]:
         raise HTTPException(
             status_code=400,
-            detail=f"Proveedor '{req.llm_provider}' no soportado. Usa: openai, anthropic, gemini"
+            detail=f"Proveedor '{req.llm_provider}' no soportado. Usa: openai, anthropic, gemini, huggingface"
         )
 
     if req.k < 1 or req.k > 20:
@@ -344,6 +345,7 @@ async def chat_rag(req: ChatRequest):
             llm_api_key=req.llm_api_key,
             llm_model=req.llm_model,
             historial=req.historial,
+            llm_endpoint_url=req.llm_endpoint_url,
         )
         return result
 

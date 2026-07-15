@@ -599,6 +599,12 @@ const MODELOS = {
     { id:'gemini-2.5-flash-preview-05-20',    label:'Gemini 2.5 Flash Preview' },
     { id:'gemini-1.5-pro-002',                label:'Gemini 1.5 Pro' },
   ],
+  huggingface: [
+    { id:'meta-llama/Llama-3.1-8B-Instruct',   label:'Llama 3.1 8B Instruct (recomendado)' },
+    { id:'meta-llama/Llama-3.1-70B-Instruct',  label:'Llama 3.1 70B Instruct' },
+    { id:'mistralai/Mistral-7B-Instruct-v0.3', label:'Mistral 7B Instruct' },
+    { id:'Qwen/Qwen2.5-72B-Instruct',          label:'Qwen 2.5 72B Instruct' },
+  ],
 };
 
 function initLLMConfig() {
@@ -615,6 +621,12 @@ function updateModelos() {
   const sel = document.getElementById('llm-model');
   const modelos = MODELOS[provider] || [];
   sel.innerHTML = modelos.map(m => `<option value="${m.id}">${m.label}</option>`).join('');
+
+  // Mostrar/ocultar campo de endpoint y ajustar placeholder de API Key
+  const isHF = provider === 'huggingface';
+  document.getElementById('hf-endpoint-wrapper').style.display = isHF ? 'block' : 'none';
+  document.getElementById('llm-api-key').placeholder = isHF ? 'HF Token (hf_...)' : 'Ingresa tu API Key...';
+  document.getElementById('api-key-label').textContent = isHF ? 'HF Token' : 'API Key';
 }
 
 function toggleKeyVis() {
@@ -639,11 +651,12 @@ function setRagState(step, s) {
 }
 
 async function sendChat() {
-  const pregunta = document.getElementById('chat-input').value.trim();
-  const apiKey   = document.getElementById('llm-api-key').value.trim();
-  const provider = document.getElementById('llm-provider').value;
-  const model    = document.getElementById('llm-model').value;
-  const k        = parseInt(document.getElementById('chat-k').value) || 5;
+  const pregunta     = document.getElementById('chat-input').value.trim();
+  const apiKey       = document.getElementById('llm-api-key').value.trim();
+  const provider     = document.getElementById('llm-provider').value;
+  const model        = document.getElementById('llm-model').value;
+  const k            = parseInt(document.getElementById('chat-k').value) || 5;
+  const endpointUrl  = (document.getElementById('hf-endpoint-url')?.value || '').trim();
 
   if (!pregunta) return;
   if (!apiKey)   { toast('Ingresa una API Key del proveedor LLM', 'error'); return; }
@@ -673,6 +686,7 @@ async function sendChat() {
         pregunta, k, llm_provider: provider,
         llm_api_key: apiKey, llm_model: model,
         historial: state.chatHistory.slice(-8),
+        llm_endpoint_url: endpointUrl,
       }),
     });
 

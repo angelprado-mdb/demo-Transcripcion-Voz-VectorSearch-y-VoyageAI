@@ -9,7 +9,7 @@ Demo interactivo que muestra cómo MongoDB Atlas transforma transcripciones de l
 | **Auto-Embedding** | Atlas genera y gestiona los vectores automáticamente al insertar documentos, sin código adicional |
 | **Vector Search** | Búsqueda semántica en lenguaje natural usando `$vectorSearch` con modelo `voyage-4` |
 | **Embeddings internos** | Visualización de los vectores almacenados en `__mdb_internal_search` |
-| **RAG** | Pipeline completo Retrieve → Augment → Generate con OpenAI, Anthropic o Gemini |
+| **RAG** | Pipeline completo Retrieve → Augment → Generate con OpenAI, Anthropic, Gemini o Hugging Face |
 
 ## Arquitectura
 
@@ -45,6 +45,7 @@ Demo interactivo que muestra cómo MongoDB Atlas transforma transcripciones de l
   - [OpenAI](https://platform.openai.com/api-keys)
   - [Anthropic](https://console.anthropic.com/)
   - [Google AI Studio](https://aistudio.google.com/app/apikey)
+  - [Hugging Face](https://huggingface.co/settings/tokens) (token con permiso `Inference` — tier gratuito disponible)
 
 ---
 
@@ -395,13 +396,100 @@ Tu JSON
 
 ## Proveedores LLM soportados para el Chat RAG
 
-El paso de generación del RAG soporta tres proveedores. La API Key se pasa en cada petición y nunca se almacena en el servidor.
+El paso de generación del RAG soporta cuatro proveedores. La API Key se pasa en cada petición y nunca se almacena en el servidor.
 
-| Proveedor | Modelos disponibles | Obtener API Key |
+| Proveedor | Modelos disponibles | Obtener credencial |
 |---|---|---|
 | **OpenAI** | `gpt-4o`, `gpt-4o-mini` | [platform.openai.com](https://platform.openai.com/api-keys) |
 | **Anthropic** | `claude-3-5-sonnet`, `claude-3-5-haiku` | [console.anthropic.com](https://console.anthropic.com/) |
 | **Google Gemini** | `gemini-2.0-flash`, `gemini-2.5-flash-preview`, `gemini-1.5-pro-002` | [aistudio.google.com](https://aistudio.google.com/app/apikey) |
+| **Hugging Face** | `Llama-3.1-8B-Instruct`, `Llama-3.1-70B-Instruct`, `Mistral-7B-Instruct-v0.3`, `Qwen2.5-72B-Instruct` | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
+
+---
+
+## Hugging Face — Instrucciones detalladas
+
+### Cómo funciona la integración
+
+La integración usa la **Inference API de Hugging Face** a través de su interfaz compatible con OpenAI (`https://api-inference.huggingface.co/v1`). No se requiere ningún SDK adicional — reutiliza el SDK de OpenAI ya incluido en el proyecto.
+
+```
+Tu pregunta
+  └─► Backend (rag.py)
+        └─► openai.AsyncOpenAI(base_url="https://api-inference.huggingface.co/v1")
+              └─► Hugging Face Inference API
+                    └─► Modelo open-source (Llama, Mistral, Qwen, etc.)
+```
+
+### Paso 1 — Obtener un HF Token
+
+1. Ve a [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
+2. Haz clic en **"New token"**.
+3. Elige tipo **"Read"** (suficiente para inferencia) o **"Fine-grained"** con permiso `Make calls to the serverless Inference API`.
+4. Copia el token — tiene el formato `hf_xxxxxxxxxxxxxxxxxxxxxxxx`.
+
+### Paso 2 — Aceptar los términos de los modelos restringidos (solo Llama)
+
+Los modelos de Meta (Llama) requieren aceptar sus términos de uso antes de poder usarlos:
+
+1. Ve a la página del modelo en Hugging Face, por ejemplo:
+   - [meta-llama/Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
+   - [meta-llama/Llama-3.1-70B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct)
+2. Haz clic en **"Agree and access repository"** e inicia sesión con tu cuenta HF.
+3. La aprobación suele ser inmediata.
+
+> Los modelos Mistral y Qwen **no requieren** aceptar términos adicionales — funcionan directamente con tu token.
+
+### Paso 3 — Usar en la app
+
+1. En el **Paso 7 (Chat RAG)** del wizard, selecciona **"Hugging Face"** en el selector de proveedor.
+2. Elige el modelo deseado en el selector de **Modelo**.
+3. Pega tu token en el campo **HF Token** (formato `hf_...`).
+4. Opcionalmente, ingresa una **Endpoint URL** si tienes un Inference Endpoint dedicado (ver sección siguiente).
+5. Escribe tu pregunta y envía.
+
+### Tier gratuito vs. Pro
+
+| Característica | Tier gratuito | Pro / Enterprise |
+|---|---|---|
+| Modelos disponibles | Limitado (principalmente los marcados como "free") | Todos los modelos en el hub |
+| Rate limit | Bajo (uso personal/demo) | Alto |
+| Latencia | Variable | Baja |
+| Llama 3.1 70B | No disponible en serverless gratuito | Disponible |
+
+Para demos y pruebas, **Llama-3.1-8B-Instruct**, **Mistral-7B-Instruct** y **Qwen-2.5-72B-Instruct** son los más accesibles en el tier gratuito.
+
+### Endpoints dedicados (opcional)
+
+Si tienes un **Hugging Face Inference Endpoint** propio (dedicado o privado), puedes usarlo en lugar de la API pública:
+
+1. Despliega tu endpoint en [ui.endpoints.huggingface.co](https://ui.endpoints.huggingface.co).
+2. Copia la URL del endpoint — tiene el formato:
+   ```
+   https://<nombre>.<region>.aws.endpoints.huggingface.cloud/v1
+   ```
+3. En la app, pega esa URL en el campo **Endpoint URL** (visible al seleccionar Hugging Face).
+4. La app usará tu endpoint en lugar del servicio público, con el mismo HF Token como autenticación.
+
+> Con un endpoint dedicado puedes usar **cualquier modelo del hub**, sin restricciones de tier ni rate limits compartidos.
+
+### Solución de problemas — Hugging Face
+
+#### Error `401 Unauthorized`
+- Verifica que el token comienza con `hf_` y está completo.
+- Asegúrate de que el token tiene permisos de inferencia habilitados en [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
+
+#### Error `403 Forbidden` con modelos Llama
+- Necesitas aceptar los términos de uso del modelo en la página del repositorio (ver Paso 2 arriba).
+- La cuenta HF debe haber iniciado sesión al aceptar los términos.
+
+#### Error `Model is not available` o `404`
+- El modelo no está disponible en el tier serverless gratuito. Prueba con `Llama-3.1-8B-Instruct` o `Mistral-7B-Instruct-v0.3`.
+- Alternativamente, usa un Inference Endpoint dedicado.
+
+#### Respuesta muy lenta o timeout
+- El tier gratuito puede tener cold starts (el modelo tarda en cargarse si no ha sido usado recientemente). Reintenta después de unos segundos.
+- Para demos en vivo, considera un endpoint dedicado o el modelo `Mistral-7B` que carga más rápido.
 
 ---
 
@@ -459,11 +547,13 @@ fastapi==0.115.0          # Framework web
 uvicorn[standard]==0.30.6  # Servidor ASGI
 pymongo[srv]==4.10.1       # Driver de MongoDB
 python-dotenv==1.0.1       # Variables de entorno
-openai==1.51.0             # SDK OpenAI
+openai==1.51.0             # SDK OpenAI (también usado para Hugging Face)
 anthropic==0.34.2          # SDK Anthropic
 google-genai>=1.0.0        # SDK Google Gemini (nuevo SDK oficial)
 httpx==0.27.2              # HTTP client async
 ```
+
+> La integración con Hugging Face reutiliza el SDK de `openai` apuntando a `https://api-inference.huggingface.co/v1`. No se requiere ninguna dependencia adicional.
 
 ---
 
@@ -474,3 +564,6 @@ httpx==0.27.2              # HTTP client async
 - [VoyageAI — Modelos de Embedding](https://docs.voyageai.com/docs/introduction)
 - [Aggregation Pipeline — $vectorSearch](https://www.mongodb.com/docs/vector-search/query/aggregation-stages/vector-search-stage/)
 - [PyMongo Driver](https://www.mongodb.com/docs/drivers/pymongo/)
+- [Hugging Face Inference API](https://huggingface.co/docs/api-inference/index)
+- [Hugging Face Inference Endpoints](https://huggingface.co/docs/inference-endpoints/index)
+- [Llama 3.1 en Hugging Face](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)

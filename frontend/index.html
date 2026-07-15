@@ -413,15 +413,21 @@
               <option value="openai">OpenAI</option>
               <option value="anthropic">Anthropic</option>
               <option value="gemini">Google Gemini</option>
+              <option value="huggingface">Hugging Face</option>
             </select>
 
             <div class="config-label" style="margin-top:0.75rem">Modelo</div>
             <select id="llm-model"></select>
 
-            <div class="config-label" style="margin-top:0.75rem">API Key</div>
+            <div class="config-label" style="margin-top:0.75rem"><span id="api-key-label">API Key</span></div>
             <div style="position:relative">
               <input type="password" id="llm-api-key" placeholder="Ingresa tu API Key..." style="padding-right:2.5rem" />
               <span style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-dim)" onclick="toggleKeyVis()">&#128065;</span>
+            </div>
+
+            <div id="hf-endpoint-wrapper" style="display:none;margin-top:0.75rem">
+              <div class="config-label">Endpoint URL <span style="font-size:0.7rem;opacity:0.6">(opcional — para endpoints dedicados)</span></div>
+              <input type="text" id="hf-endpoint-url" placeholder="https://api-inference.huggingface.co/v1" />
             </div>
 
             <div class="config-label" style="margin-top:0.75rem">Llamadas a recuperar: <strong id="k-label">5</strong></div>

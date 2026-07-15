@@ -17,7 +17,7 @@ from database import busqueda_vectorial, pipeline_vectorial_str
 # Tipos
 # ---------------------------------------------------------------------------
 
-LLMProvider = Literal["openai", "anthropic", "gemini"]
+LLMProvider = Literal["openai", "anthropic", "gemini", "huggingface"]
 
 MODELOS_DISPONIBLES = {
     "openai": [
@@ -32,6 +32,12 @@ MODELOS_DISPONIBLES = {
         {"id": "gemini-2.0-flash", "nombre": "Gemini 2.0 Flash", "descripcion": "Mas reciente, rapido y economico"},
         {"id": "gemini-2.5-flash-preview-05-20", "nombre": "Gemini 2.5 Flash Preview", "descripcion": "Ultimo modelo, razonamiento avanzado"},
         {"id": "gemini-1.5-pro-002", "nombre": "Gemini 1.5 Pro", "descripcion": "Alta capacidad, contexto largo"},
+    ],
+    "huggingface": [
+        {"id": "meta-llama/Llama-3.1-8B-Instruct", "nombre": "Llama 3.1 8B Instruct", "descripcion": "Open source, rapido y eficiente"},
+        {"id": "meta-llama/Llama-3.1-70B-Instruct", "nombre": "Llama 3.1 70B Instruct", "descripcion": "Alta capacidad, open source"},
+        {"id": "mistralai/Mistral-7B-Instruct-v0.3", "nombre": "Mistral 7B Instruct", "descripcion": "Eficiente y de codigo abierto"},
+        {"id": "Qwen/Qwen2.5-72B-Instruct", "nombre": "Qwen 2.5 72B Instruct", "descripcion": "Multilingue, alta capacidad"},
     ],
 }
 
@@ -229,6 +235,37 @@ async def generate_gemini(
     return response.text
 
 
+async def generate_huggingface(
+    system_prompt: str,
+    user_prompt: str,
+    api_key: str,
+    model: str,
+    historial: list,
+    endpoint_url: str = "",
+) -> str:
+    # Usa el SDK de OpenAI apuntado a la API compatible de Hugging Face.
+    # Si se provee endpoint_url se usa como base (p.ej. un Inference Endpoint dedicado);
+    # si no, se usa el endpoint serverless publico de HF.
+    from openai import AsyncOpenAI
+
+    base_url = endpoint_url.rstrip("/") if endpoint_url else "https://api-inference.huggingface.co/v1"
+
+    client = AsyncOpenAI(api_key=api_key, base_url=base_url)
+
+    messages = [{"role": "system", "content": system_prompt}]
+    for msg in historial:
+        messages.append({"role": msg["role"], "content": msg["content"]})
+    messages.append({"role": "user", "content": user_prompt})
+
+    response = await client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.3,
+        max_tokens=2048,
+    )
+    return response.choices[0].message.content
+
+
 # ---------------------------------------------------------------------------
 # Orquestador RAG principal
 # ---------------------------------------------------------------------------
@@ -240,6 +277,7 @@ async def rag_chat(
     llm_api_key: str,
     llm_model: str,
     historial: list,
+    llm_endpoint_url: str = "",
 ) -> dict:
     """
     Orquesta el flujo RAG completo y retorna la respuesta junto con
@@ -272,11 +310,16 @@ async def rag_chat(
         "gemini": generate_gemini,
     }
 
-    generator = generators.get(llm_provider)
-    if not generator:
-        raise ValueError(f"Proveedor LLM no soportado: {llm_provider}. Usa: openai, anthropic, gemini")
-
-    respuesta = await generator(system_prompt, user_prompt, llm_api_key, llm_model, historial)
+    if llm_provider == "huggingface":
+        respuesta = await generate_huggingface(
+            system_prompt, user_prompt, llm_api_key, llm_model, historial,
+            endpoint_url=llm_endpoint_url,
+        )
+    else:
+        generator = generators.get(llm_provider)
+        if not generator:
+            raise ValueError(f"Proveedor LLM no soportado: {llm_provider}. Usa: openai, anthropic, gemini, huggingface")
+        respuesta = await generator(system_prompt, user_prompt, llm_api_key, llm_model, historial)
 
     # Preparar llamadas para la respuesta (sin el vector completo)
     llamadas_resumen = []
